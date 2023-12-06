@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Behance :: For You</title>
+    <link rel="icon" type="image/x-icon" href="src/images/favicon.ico">
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header>
+      <ul>
+        <li class="logo">
+          <img src="src/images/logo_long.png" alt="" srcset="" width="85px" />
+        </li>
+        <li><a class="active" href="#">For You</a></li>
+        <li><a href="#">Discover</a></li>
+        <li><a href="#">Hire</a></li>
+        <li><a href="#">Assets</a></li>
+        <li><a href="#">Jobs</a></li>
+        <li>
+          <div class="wrapper">
+            <div class="searchBar">
+              <input
+                id="search-input"
+                type="text"
+                name="searchQueryInput"
+                placeholder="Search..."
+                value=""
+              />
+              <button
+                id="searchQuerySubmit"
+                type="submit"
+                name="searchQuerySubmit"
+                style="
+                  font-family: Arial, FontAwesome;
+                  color: rgba(0, 0, 0, 0.5);
+                "
+              >
+                &#xF002;
+              </button>
+            </div>
+          </div>
+          <div id="search-results"></div>
+        </li>
+        <span class="fr">
+          <li class="fr-select">
+            <div id="search-bar">
+              Filter&nbsp;&nbsp;
+              <select class="category-dropdown" id="category-dropdown">
+                <option value="all">All</option>
+                <option value="projects">Projects</option>
+                <option value="images">Images</option>
+                <option value="prototypes">Prototypes</option>
+                <option value="people">People</option>
+                <option value="assets">Assets</option>
+              </select>
+            </div>
+          </li>
+          <li class="fr-btn">Share your work</li>
+          <li class="logo" style="padding: 11px">
+            <img src="src/images/profile.png" alt="" srcset="" width="30px" />
+          </li>
+          <li><a href="#">Adobe</a></li>
+        </span>
+      </ul>
+    </header>
+
+    <div class="container">
+      <div id="projects-container"></div>
+    </div>
+
+    <script>
+      const projects = [
+        {
+          title: "Zack Hall",
+          category: "projects",
+          imageUrl: "src/images/yellow.webp",
+        },
+        {
+          title: "Alphonse Donaldson",
+          category: "images",
+          imageUrl: "src/images/person.webp",
+        },
+        {
+          title: "Melva Mullins",
+          category: "prototypes",
+          imageUrl: "src/images/darkblue.webp",
+        },
+        {
+          title: "Keenan Briggs",
+          category: "projects",
+          imageUrl: "src/images/bag.webp",
+        },
+        {
+          title: "Teri Mcfarland",
+          category: "images",
+          imageUrl: "src/images/blue.webp",
+        },
+        {
+          title: "Hubert Pennington",
+          category: "prototypes",
+          imageUrl: "src/images/cyber.webp",
+        },
+        {
+          title: "Elisha Hooper",
+          category: "projects",
+          imageUrl: "src/images/green.webp",
+        },
+        {
+          title: "Liliana Burton",
+          category: "images",
+          imageUrl: "src/images/iphone.webp",
+        },
+        {
+          title: "Norman Rivers",
+          category: "prototypes",
+          imageUrl: "src/images/phone.webp",
+        },
+        {
+          title: "Debora Harrell",
+          category: "people",
+          imageUrl: "src/images/violet.webp",
+        },
+        {
+          title: "Jeannie Bartlett",
+          category: "people",
+          imageUrl: "src/images/ev.webp",
+        },
+        {
+          title: "Sallie Johnson",
+          category: "people",
+          imageUrl: "src/images/notes.webp",
+        },
+        {
+          title: "Angelita Sloan",
+          category: "assets",
+          imageUrl: "src/images/saffron.webp",
+        },
+        {
+          title: "Sherman French",
+          category: "assets",
+          imageUrl: "src/images/gradient.webp",
+        },
+        {
+          title: "Letha Le",
+          category: "assets",
+          imageUrl: "src/images/w3.webp",
+        },
+      ];
+      const searchInput = document.getElementById("search-input");
+      const searchResults = document.getElementById("search-results");
+      const categoryDropdown = document.getElementById("category-dropdown");
+      const projectsContainer = document.getElementById("projects-container");
+
+      searchInput.addEventListener("input", updateSearchResults);
+
+      categoryDropdown.addEventListener("change", updateProjects);
+
+      updateProjects();
+
+      function updateSearchResults() {
+        const query = searchInput.value.toLowerCase();
+        const filteredProjects = projects.filter((project) =>
+          project.title.toLowerCase().includes(query)
+        );
+
+        searchResults.innerHTML = "";
+        filteredProjects.forEach((project) => {
+          const resultItem = document.createElement("div");
+          resultItem.textContent = project.title;
+          resultItem.addEventListener("click", () => {
+            searchInput.value = project.title;
+            searchResults.style.display = "none";
+            updateProjects();
+          });
+          searchResults.appendChild(resultItem);
+        });
+
+        searchResults.style.display =
+          filteredProjects.length > 0 ? "block" : "none";
+      }
+
+      function updateProjects() {
+        projectsContainer.onclick = function () {
+          searchResults.style.display = "none";
+        };
+        const category = categoryDropdown.value;
+        const filteredProjects =
+          category === "all"
+            ? projects
+            : projects.filter((project) => project.category === category);
+
+        projectsContainer.innerHTML = "";
+
+        const groupedProjects = {};
+        filteredProjects.forEach((project) => {
+          if (!groupedProjects[project.category]) {
+            groupedProjects[project.category] = [];
+          }
+          groupedProjects[project.category].push(project);
+        });
+
+        for (const categoryKey in groupedProjects) {
+          const categoryRow = document.createElement("div");
+          categoryRow.className = "project-row";
+
+          groupedProjects[categoryKey].forEach((project) => {
+            const projectCard = document.createElement("div");
+            projectCard.className = "project-card";
+
+            const projectImage = document.createElement("img");
+            projectImage.src = project.imageUrl;
+            projectCard.appendChild(projectImage);
+
+            const projectTitle = document.createElement("div");
+            projectTitle.textContent = project.title;
+            projectCard.appendChild(projectTitle);
+
+            categoryRow.appendChild(projectCard);
+          });
+
+          projectsContainer.appendChild(categoryRow);
+        }
+      }
+    </script>
+  </body>
+</html>
